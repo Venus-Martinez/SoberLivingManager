@@ -1,0 +1,18 @@
+#ai-summary-container {
+    margin-top: 20px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 5px solid #1f3a5f;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+#ai-summary-container h3 {
+    margin-top: 0;
+    color: #1f3a5f;
+}
+
+#ai-summary-output {
+    line-height: 1.6;
+    white-space: pre-wrap;
+}

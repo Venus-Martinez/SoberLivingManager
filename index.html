@@ -8,6 +8,7 @@
     <title>Sober Living House | Resident Management</title>
 
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/aiStyling.css">
 </head>
 
 <body>
@@ -197,6 +198,30 @@
                 <div class="detail-card">
                     <h3>Incident Reports</h3>
                     <p id="detail-open-incidents">0</p>
+                </div>
+
+            </div>
+
+            <div class="resident-section" id="ai-resident-section">
+
+                <div class="section-header">
+
+                    <h2>AI Resident Assistant</h2>
+
+                    <button id="generate-ai-summary">
+                        Generate AI Summary
+                    </button>
+
+                </div>
+
+                <div id="ai-summary-container" class="hidden">
+
+                    <h3>Resident Summary</h3>
+
+                    <div id="ai-summary-output">
+                        No summary generated.
+                    </div>
+
                 </div>
 
             </div>
@@ -572,6 +597,7 @@
 
 
     <script src="js/app.js"></script>
+    <script src="js/aiFunctionality.js"></script>
 
 </body>
 
