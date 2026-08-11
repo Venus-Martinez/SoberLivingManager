@@ -8,8 +8,7 @@ const defaultResidents = [
         status: "Active",
         weeklyRent: 175,
         uaStatus: "Complete",
-        choreStatus: "Complete",
-        openIncidents: 0
+        choreStatus: "Complete"
     },
 
     {
@@ -19,8 +18,7 @@ const defaultResidents = [
         status: "Active",
         weeklyRent: 175,
         uaStatus: "Due",
-        choreStatus: "Missed",
-        openIncidents: 1
+        choreStatus: "Missed"
     },
 
     {
@@ -30,8 +28,7 @@ const defaultResidents = [
         status: "Active",
         weeklyRent: 175,
         uaStatus: "Complete",
-        choreStatus: "Complete",
-        openIncidents: 0
+        choreStatus: "Complete"
     }
 ];
 
@@ -193,6 +190,247 @@ function saveUaRecords() {
     );
 }
 
+const defaultIncidentRecords = [];
+
+let incidentRecords = loadIncidentRecords();
+
+function loadIncidentRecords() {
+
+    const savedIncidentRecords =
+        localStorage.getItem("incidentRecords");
+
+    if (savedIncidentRecords) {
+        return JSON.parse(savedIncidentRecords);
+    }
+
+    localStorage.setItem(
+        "incidentRecords",
+        JSON.stringify(defaultIncidentRecords)
+    );
+
+    return [...defaultIncidentRecords];
+}
+
+function saveIncidentRecords() {
+
+    localStorage.setItem(
+        "incidentRecords",
+        JSON.stringify(incidentRecords)
+    );
+}
+
+document
+    .getElementById("show-incident-form")
+    .addEventListener("click", () => {
+
+        if (!selectedResident) {
+            return;
+        }
+
+        document.getElementById("incident-date").value =
+            getTodayDate();
+
+        document
+            .getElementById("incident-form-container")
+            .classList.remove("hidden");
+    });
+
+document
+    .getElementById("cancel-incident")
+    .addEventListener("click", () => {
+
+        document
+            .getElementById("incident-form-container")
+            .classList.add("hidden");
+
+        document
+            .getElementById("incident-form")
+            .reset();
+    });
+
+document
+    .getElementById("incident-form")
+    .addEventListener("submit", event => {
+
+        event.preventDefault();
+
+        if (!selectedResident) {
+            return;
+        }
+
+        const incidentDate =
+            document.getElementById(
+                "incident-date"
+            ).value;
+
+        const incidentType =
+            document.getElementById(
+                "incident-type"
+            ).value;
+
+        const recordedBy =
+            document.getElementById(
+                "incident-recorded-by"
+            ).value.trim();
+
+        const description =
+            document.getElementById(
+                "incident-description"
+            ).value.trim();
+
+        const newIncident = {
+            id: `INC-${Date.now()}-${selectedResident.id}`,
+            residentId: selectedResident.id,
+            date: incidentDate,
+            type: incidentType,
+            recordedBy: recordedBy,
+            description: description,
+            recordedAt: new Date().toISOString()
+        };
+
+        incidentRecords.push(newIncident);
+
+        saveIncidentRecords();
+
+        document
+            .getElementById("incident-form")
+            .reset();
+
+        document
+            .getElementById("incident-form-container")
+            .classList.add("hidden");
+
+        displayIncidentHistory(
+            selectedResident.id
+        );
+
+        updateDashboard();
+    });
+
+function displayIncidentHistory(residentId) {
+
+    const incidentHistory =
+        document.getElementById(
+            "incident-history"
+        );
+
+    incidentHistory.innerHTML = "";
+
+    const residentIncidents =
+        incidentRecords
+            .filter(
+                incident =>
+                    incident.residentId === residentId
+            )
+            .sort(
+                (a, b) =>
+                    new Date(b.date) -
+                    new Date(a.date)
+            );
+
+    if (residentIncidents.length === 0) {
+
+        incidentHistory.innerHTML = `
+            <p>No incident reports recorded.</p>
+        `;
+
+        return;
+    }
+
+    residentIncidents.forEach(incident => {
+
+        const incidentRecord =
+            document.createElement("div");
+
+        incidentRecord.classList.add(
+            "incident-record"
+        );
+
+        incidentRecord.innerHTML = `
+            <p>
+                <strong>Date:</strong>
+                ${incident.date}
+            </p>
+
+            <p>
+                <strong>Type:</strong>
+                ${incident.type}
+            </p>
+
+            <p>
+                <strong>Recorded By:</strong>
+                ${incident.recordedBy}
+            </p>
+
+            <div class="incident-description">
+                <strong>Description:</strong>
+                <br>
+                ${incident.description}
+            </div>
+
+            <button
+                class="delete-incident"
+                data-incident-id="${incident.id}"
+            >
+                Delete Incident
+            </button>
+        `;
+
+        incidentHistory.appendChild(
+            incidentRecord
+        );
+
+        const deleteButton =
+            incidentRecord.querySelector(
+                ".delete-incident"
+            );
+
+        deleteButton.addEventListener(
+            "click",
+            () => deleteIncident(
+                incident.id
+            )
+        );
+    });
+}
+
+function deleteIncident(incidentId) {
+
+    const incident =
+        incidentRecords.find(
+            incident =>
+                incident.id === incidentId
+        );
+
+    if (!incident) {
+        return;
+    }
+
+    const confirmed = confirm(
+        `Delete this ${incident.type} incident report?`
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    incidentRecords =
+        incidentRecords.filter(
+            incident =>
+                incident.id !== incidentId
+        );
+
+    saveIncidentRecords();
+
+    if (selectedResident) {
+        displayIncidentHistory(
+            selectedResident.id
+        );
+    }
+
+    updateDashboard();
+}
+
 let selectedResident = null;
 
 function calculateResidentBalance(residentId) {
@@ -352,10 +590,13 @@ function updateDashboard() {
     const uaActionNeeded =
         residentsNeedingUaAction.size;
 
-    const openIncidents = residents.reduce(
-        (total, resident) => total + resident.openIncidents,
-        0
-    );
+    const incidentCount =
+        incidentRecords.filter(
+            incident =>
+                activeResidentIds.includes(
+                    incident.residentId
+                )
+        ).length;
 
     document.getElementById("active-residents").textContent =
         activeResidents;
@@ -370,7 +611,7 @@ function updateDashboard() {
         uaActionNeeded;
 
     document.getElementById("open-incidents").textContent =
-        openIncidents;
+        incidentCount;
 }
 
 function displayResidents() {
@@ -390,6 +631,12 @@ function displayResidents() {
         const residentCard = document.createElement("div");
 
         const uaStatus = getResidentUaStatus(resident);
+
+        const incidentCount =
+            incidentRecords.filter(
+                incident =>
+                    incident.residentId === resident.id
+            ).length;
 
         residentCard.classList.add("resident-card");
 
@@ -416,8 +663,8 @@ function displayResidents() {
             </p>
 
             <p>
-                <strong>Open Incidents:</strong>
-                ${resident.openIncidents}
+                <strong>Incident Reports:</strong>
+                ${incidentCount}
             </p>
         `;
 
@@ -432,6 +679,12 @@ function showResidentDetails(resident) {
     const balance = calculateResidentBalance(resident.id);
 
     const uaStatus = getResidentUaStatus(resident);
+
+    const incidentCount =
+        incidentRecords.filter(
+            incident =>
+                incident.residentId === resident.id
+        ).length;
 
     document.getElementById("dashboard").classList.add("hidden");
     document.getElementById("residents").classList.add("hidden");
@@ -457,10 +710,11 @@ function showResidentDetails(resident) {
         resident.choreStatus;
 
     document.getElementById("detail-open-incidents").textContent =
-        resident.openIncidents;
+        incidentCount;
 
     displayPaymentHistory(resident.id);
     displayUaHistory(resident.id);
+    displayIncidentHistory(resident.id);
 }
 
 document
@@ -901,8 +1155,7 @@ document.getElementById("add-resident-form").addEventListener("submit", event =>
         startDate: startDate,
         archivedDate: null,
         nextUaDueDate: firstUaDate,
-        choreStatus: "Complete",
-        openIncidents: 0
+        choreStatus: "Complete"
     };
 
     residents.push(newResident);
