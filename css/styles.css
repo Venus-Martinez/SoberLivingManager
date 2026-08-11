@@ -1,0 +1,494 @@
+/* =========================================
+   GENERAL PAGE STYLES
+   ========================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f4f6f8;
+    color: #1f2933;
+}
+
+
+/* =========================================
+   HEADER
+   ========================================= */
+
+header {
+    background-color: #1f3a5f;
+    color: white;
+    padding: 24px 40px;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 28px;
+}
+
+header p {
+    margin: 6px 0 0;
+    color: #d9e2ec;
+}
+
+
+/* =========================================
+   MAIN CONTENT
+   ========================================= */
+
+main {
+    width: 90%;
+    max-width: 1200px;
+    margin: 30px auto;
+}
+
+section {
+    margin-bottom: 40px;
+}
+
+section h2 {
+    margin-bottom: 20px;
+}
+
+
+/* =========================================
+   DASHBOARD CARDS
+   ========================================= */
+
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,
+            minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.dashboard-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-card h3 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-size: 16px;
+    color: #52606d;
+}
+
+.dashboard-card p {
+    margin: 0;
+    font-size: 28px;
+    font-weight: bold;
+    color: #1f3a5f;
+}
+
+#dashboard>.section-header,
+#residents>.section-header {
+    margin-bottom: 20px;
+}
+
+
+/* =========================================
+   RESIDENT LIST
+   ========================================= */
+
+#resident-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.resident-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    border-left: 5px solid #1f3a5f;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.resident-card h3 {
+    margin-top: 0;
+    color: #1f3a5f;
+}
+
+.resident-card p {
+    margin: 10px 0;
+}
+
+
+/* =========================================
+   RESPONSIVE DESIGN
+   ========================================= */
+
+@media (max-width: 900px) {
+
+    .dashboard-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    #resident-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    header {
+        padding: 20px;
+    }
+
+    main {
+        width: 94%;
+    }
+
+    .dashboard-cards {
+        grid-template-columns: 1fr;
+    }
+
+    #resident-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================================
+   RESIDENT DETAIL VIEW
+   ========================================= */
+
+.hidden {
+    display: none;
+}
+
+.resident-card {
+    cursor: pointer;
+}
+
+.resident-card:hover {
+    transform: translateY(-2px);
+    transition: 0.2s ease;
+}
+
+#back-to-residents {
+    margin-bottom: 20px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    background-color: #1f3a5f;
+    color: white;
+    cursor: pointer;
+}
+
+#back-to-residents:hover {
+    opacity: 0.9;
+}
+
+.resident-details-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.detail-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.detail-card h3 {
+    margin-top: 0;
+    color: #52606d;
+}
+
+.detail-card p {
+    font-size: 24px;
+    font-weight: bold;
+    color: #1f3a5f;
+}
+
+@media (max-width: 900px) {
+    .resident-details-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .resident-details-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================================
+   RESIDENT SECTIONS
+   ========================================= */
+
+.resident-section {
+    margin-top: 35px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.section-header h2 {
+    margin: 0;
+}
+
+.section-header button,
+#payment-form button,
+#rent-charge-form button,
+#add-resident-form button,
+#ua-schedule-form button,
+#ua-update-form button {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    background-color: #1f3a5f;
+    color: white;
+    cursor: pointer;
+}
+
+.section-header button:hover,
+#payment-form button:hover,
+#rent-charge-form button:hover,
+#add-resident-form button:hover,
+#ua-schedule-form button:hover,
+#ua-update-form button:hover {
+    opacity: 0.9;
+}
+
+
+/* =========================================
+   PAYMENT FORM
+   ========================================= */
+
+#payment-form-container,
+#rent-charge-form-container,
+#add-resident-form-container {
+    margin-top: 20px;
+    margin-bottom: 25px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #cbd2d9;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+}
+
+#payment-form .secondary-button,
+#rent-charge-form .secondary-button,
+#add-resident-form .secondary-button,
+#ua-schedule-form .secondary-button,
+#ua-update-form .secondary-button {
+    background-color: #7b8794;
+}
+
+
+/* =========================================
+   PAYMENT HISTORY
+   ========================================= */
+
+.payment-record {
+    margin-top: 15px;
+    background-color: white;
+    padding: 16px 20px;
+    border-radius: 8px;
+    border-left: 5px solid #1f3a5f;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.payment-record p {
+    margin: 6px 0;
+}
+
+.account-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.transaction-payment {
+    border-left-color: #2f855a;
+}
+
+.transaction-charge {
+    border-left-color: #c05621;
+}
+
+.delete-transaction {
+    margin-top: 10px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    background-color: #b83232;
+    color: white;
+    cursor: pointer;
+}
+
+.delete-transaction:hover {
+    opacity: 0.9;
+}
+
+/* =========================================
+   ARCHIVED RESIDENTS
+   ========================================= */
+
+#archived-resident-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.restore-resident {
+    margin-top: 10px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    background-color: #2f855a;
+    color: white;
+    cursor: pointer;
+}
+
+.restore-resident:hover {
+    opacity: 0.9;
+}
+
+@media (max-width: 900px) {
+
+    #archived-resident-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+
+    #archived-resident-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+#show-archived-residents {
+    margin-top: 20px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    background-color: #1f3a5f;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+#show-archived-residents:hover {
+    opacity: 0.9;
+}
+
+.resident-actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+#archive-resident {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    background-color: #8a6d1d;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#archive-resident:hover {
+    opacity: 0.9;
+}
+
+#delete-resident {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    background-color: #b83232;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#delete-resident:hover {
+    opacity: 0.9;
+}
+
+/* =========================================
+   UA Records
+   ========================================= */
+
+#ua-schedule-form-container,
+#ua-update-form-container {
+    margin-top: 20px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.ua-record {
+    margin-top: 15px;
+    background-color: white;
+    padding: 16px 20px;
+    border-radius: 8px;
+    border-left: 5px solid #1f3a5f;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.ua-record-due {
+    border-left-color: #c05621;
+}
+
+.ua-record-completed {
+    border-left-color: #2f855a;
+}
+
+.ua-record-refused,
+.ua-record-missed {
+    border-left-color: #b83232;
+}
+
+.ua-record button {
+    margin-top: 10px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    background-color: #1f3a5f;
+    color: white;
+    cursor: pointer;
+}
