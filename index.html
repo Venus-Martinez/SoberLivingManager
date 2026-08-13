@@ -467,19 +467,19 @@
                             </label>
 
                             <textarea id="incident-description" rows="8" required></textarea>
-                            
+
                             <button type="button" id="improve-incident-with-ai">
-                                Improve Documentation with AI
+                                Assist with AI
                             </button>
 
                             <div id="incident-ai-suggestion-container" class="hidden">
 
-                                <h4>AI Suggested Rewrite</h4>
+                                <h4 id="incident-ai-suggestion-title">AI Suggestion</h4>
 
                                 <div id="incident-ai-suggestion"></div>
 
                                 <button type="button" id="use-incident-ai-suggestion">
-                                    Use Suggested Rewrite
+                                    Use Suggestion
                                 </button>
 
                             </div>
@@ -492,7 +492,7 @@
                                 Save Incident Report
                             </button>
 
-                            <button type="button" id="cancel-incident" class="secondary-button incident-form button">
+                            <button type="button" id="cancel-incident" class="secondary-button">
                                 Cancel
                             </button>
 

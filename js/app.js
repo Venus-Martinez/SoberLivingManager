@@ -197,14 +197,16 @@ let incidentRecords = loadIncidentRecords();
 function loadIncidentRecords() {
 
     const savedIncidentRecords =
-        localStorage.getItem("incidentRecords");
+        localStorage.getItem(
+            `${STORAGE_PREFIX}-incidentRecords`
+        );
 
     if (savedIncidentRecords) {
         return JSON.parse(savedIncidentRecords);
     }
 
     localStorage.setItem(
-        "incidentRecords",
+        `${STORAGE_PREFIX}-incidentRecords`,
         JSON.stringify(defaultIncidentRecords)
     );
 
@@ -214,7 +216,7 @@ function loadIncidentRecords() {
 function saveIncidentRecords() {
 
     localStorage.setItem(
-        "incidentRecords",
+        `${STORAGE_PREFIX}-incidentRecords`,
         JSON.stringify(incidentRecords)
     );
 }
@@ -246,6 +248,8 @@ document
         document
             .getElementById("incident-form")
             .reset();
+
+        resetIncidentAiAssist();
     });
 
 document
@@ -299,6 +303,8 @@ document
         document
             .getElementById("incident-form-container")
             .classList.add("hidden");
+
+        resetIncidentAiAssist();
 
         displayIncidentHistory(
             selectedResident.id

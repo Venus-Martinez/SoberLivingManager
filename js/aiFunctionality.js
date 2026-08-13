@@ -156,6 +156,8 @@ document
         }
     });
 
+let currentIncidentAiAction = null;
+
 document
     .getElementById("improve-incident-with-ai")
     .addEventListener("click", async () => {
@@ -170,18 +172,65 @@ document
                 "incident-description"
             ).value.trim();
 
-        if (!description) {
+        let action;
+
+        /*
+            CASE 1:
+            No type selected
+            Description exists
+            -> Suggest incident type
+        */
+        if (!incidentType && description) {
+
+            action = "suggestType";
+        }
+
+        /*
+            CASE 2:
+            Type selected
+            Description exists
+            -> Rewrite description
+        */
+        else if (incidentType && description) {
+
+            action = "rewriteDescription";
+        }
+
+        /*
+            CASE 3:
+            Type selected
+            No description
+            -> Give documentation guidance
+        */
+        else if (incidentType && !description) {
+
+            action = "documentationGuidance";
+        }
+
+        /*
+            CASE 4:
+            Nothing entered
+        */
+        else {
 
             alert(
-                "Enter an incident description before using AI."
+                "Select an incident type or enter a description before using AI."
             );
 
             return;
         }
 
+        currentIncidentAiAction =
+            action;
+
         const suggestionContainer =
             document.getElementById(
                 "incident-ai-suggestion-container"
+            );
+
+        const suggestionTitle =
+            document.getElementById(
+                "incident-ai-suggestion-title"
             );
 
         const suggestionOutput =
@@ -189,12 +238,70 @@ document
                 "incident-ai-suggestion"
             );
 
+        const useSuggestionButton =
+            document.getElementById(
+                "use-incident-ai-suggestion"
+            );
+
+
+        /*
+            Set the UI depending on
+            what AI is being asked to do.
+        */
+
+        if (action === "suggestType") {
+
+            suggestionTitle.textContent =
+                "AI Suggested Incident Type";
+
+            suggestionOutput.textContent =
+                "Analyzing incident description...";
+
+            useSuggestionButton.textContent =
+                "Use Suggested Type";
+
+            useSuggestionButton.classList.remove(
+                "hidden"
+            );
+        }
+
+        if (action === "rewriteDescription") {
+
+            suggestionTitle.textContent =
+                "AI Suggested Rewrite";
+
+            suggestionOutput.textContent =
+                "Improving documentation...";
+
+            useSuggestionButton.textContent =
+                "Use Suggested Rewrite";
+
+            useSuggestionButton.classList.remove(
+                "hidden"
+            );
+        }
+
+        if (action === "documentationGuidance") {
+
+            suggestionTitle.textContent =
+                "AI Documentation Guidance";
+
+            suggestionOutput.textContent =
+                "Generating documentation guidance...";
+
+            /*
+                There is nothing to automatically
+                insert in this mode.
+            */
+
+            useSuggestionButton.classList.add(
+                "hidden"
+            );
+        }
+
         suggestionContainer.classList.remove(
             "hidden"
         );
-
-        suggestionOutput.textContent =
-            "Improving documentation...";
 
         try {
 
@@ -209,6 +316,9 @@ document
                     },
 
                     body: JSON.stringify({
+                        action:
+                            action,
+
                         incidentType:
                             incidentType,
 
@@ -229,17 +339,21 @@ document
                 await response.json();
 
             suggestionOutput.textContent =
-                data.rewrittenDescription;
+                data.result;
 
         } catch (error) {
 
             console.error(
-                "Incident AI Rewrite Error:",
+                "Incident AI Assist Error:",
                 error
             );
 
             suggestionOutput.textContent =
-                "Unable to improve the incident documentation.";
+                "Unable to complete the AI assistance request.";
+
+            useSuggestionButton.classList.add(
+                "hidden"
+            );
         }
     });
 
@@ -256,13 +370,109 @@ document
             return;
         }
 
-        document.getElementById(
-            "incident-description"
-        ).value = suggestion;
+        /*
+            AI suggested a TYPE
+        */
+        if (
+            currentIncidentAiAction ===
+            "suggestType"
+        ) {
+
+            const incidentTypeSelect =
+                document.getElementById(
+                    "incident-type"
+                );
+
+            const validOption =
+                Array.from(
+                    incidentTypeSelect.options
+                ).some(
+                    option =>
+                        option.value === suggestion
+                );
+
+            if (!validOption) {
+
+                alert(
+                    "The AI suggestion does not match an available incident type."
+                );
+
+                return;
+            }
+
+            incidentTypeSelect.value =
+                suggestion;
+        }
+
+        /*
+            AI suggested a rewritten DESCRIPTION
+        */
+        if (
+            currentIncidentAiAction ===
+            "rewriteDescription"
+        ) {
+
+            document.getElementById(
+                "incident-description"
+            ).value = suggestion;
+        }
 
         document
             .getElementById(
                 "incident-ai-suggestion-container"
             )
             .classList.add("hidden");
+
+        currentIncidentAiAction =
+            null;
     });
+
+function resetIncidentAiAssist() {
+
+    const suggestionContainer =
+        document.getElementById(
+            "incident-ai-suggestion-container"
+        );
+
+    if (suggestionContainer) {
+        suggestionContainer.classList.add(
+            "hidden"
+        );
+    }
+
+    const suggestionOutput =
+        document.getElementById(
+            "incident-ai-suggestion"
+        );
+
+    if (suggestionOutput) {
+        suggestionOutput.textContent = "";
+    }
+
+    const suggestionTitle =
+        document.getElementById(
+            "incident-ai-suggestion-title"
+        );
+
+    if (suggestionTitle) {
+        suggestionTitle.textContent =
+            "AI Suggestion";
+    }
+
+    const useSuggestionButton =
+        document.getElementById(
+            "use-incident-ai-suggestion"
+        );
+
+    if (useSuggestionButton) {
+
+        useSuggestionButton.textContent =
+            "Use Suggestion";
+
+        useSuggestionButton.classList.remove(
+            "hidden"
+        );
+    }
+
+    currentIncidentAiAction = null;
+}
