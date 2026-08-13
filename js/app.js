@@ -1,224 +1,117 @@
-const STORAGE_PREFIX = "second-chance-portfolio";
+let residents = [];
 
-const defaultResidents = [
-    {
-        id: "RES001",
-        firstName: "Alex",
-        lastName: "Johnson",
-        status: "Active",
-        weeklyRent: 175,
-        uaStatus: "Complete",
-        choreStatus: "Complete"
-    },
+async function loadResidentsFromCloud() {
 
-    {
-        id: "RES002",
-        firstName: "Jordan",
-        lastName: "Smith",
-        status: "Active",
-        weeklyRent: 175,
-        uaStatus: "Due",
-        choreStatus: "Missed"
-    },
+    try {
 
-    {
-        id: "RES003",
-        firstName: "Chris",
-        lastName: "Taylor",
-        status: "Active",
-        weeklyRent: 175,
-        uaStatus: "Complete",
-        choreStatus: "Complete"
-    }
-];
+        residents =
+            await getResidentsFromApi();
 
-let residents = loadResidents();
-
-function loadResidents() {
-
-    const savedResidents =
-        localStorage.getItem(`${STORAGE_PREFIX}-residents`);
-
-    if (savedResidents) {
-        return JSON.parse(savedResidents);
-    }
-
-    localStorage.setItem(
-        `${STORAGE_PREFIX}-residents`,
-        JSON.stringify(defaultResidents)
-    );
-
-    return [...defaultResidents];
-}
-
-function saveResidents() {
-
-    localStorage.setItem(
-        `${STORAGE_PREFIX}-residents`,
-        JSON.stringify(residents)
-    );
-}
-
-function ensureResidentUaFields() {
-
-    let changed = false;
-
-    residents.forEach(resident => {
-
-        if (!Object.prototype.hasOwnProperty.call(
-            resident,
-            "nextUaDueDate"
-        )) {
-            resident.nextUaDueDate = null;
-            changed = true;
-        }
-    });
-
-    if (changed) {
-        saveResidents();
-    }
-}
-
-ensureResidentUaFields();
-
-const defaultTransactions = [
-    {
-        id: "TXN001",
-        residentId: "RES001",
-        type: "Charge",
-        category: "Weekly Rent",
-        amount: 175,
-        date: "2026-08-07",
-        billingDate: "2026-08-07"
-    },
-
-    {
-        id: "TXN002",
-        residentId: "RES001",
-        type: "Payment",
-        category: "Rent Payment",
-        amount: 175,
-        date: "2026-08-07",
-        paymentMethod: "Cash"
-    },
-
-    {
-        id: "TXN003",
-        residentId: "RES002",
-        type: "Charge",
-        category: "Weekly Rent",
-        amount: 175,
-        date: "2026-08-07",
-        billingDate: "2026-08-07"
-    },
-
-    {
-        id: "TXN004",
-        residentId: "RES003",
-        type: "Charge",
-        category: "Weekly Rent",
-        amount: 175,
-        date: "2026-08-07",
-        billingDate: "2026-08-07"
-    },
-
-    {
-        id: "TXN005",
-        residentId: "RES003",
-        type: "Payment",
-        category: "Rent Payment",
-        amount: 125,
-        date: "2026-08-07",
-        paymentMethod: "Cash"
-    }
-];
-
-let transactions = loadTransactions();
-
-function loadTransactions() {
-
-    const savedTransactions =
-        localStorage.getItem(`${STORAGE_PREFIX}-transactions`);
-
-    if (savedTransactions) {
-        return JSON.parse(savedTransactions);
-    }
-
-    localStorage.setItem(
-        `${STORAGE_PREFIX}-transactions`,
-        JSON.stringify(defaultTransactions)
-    );
-
-    return [...defaultTransactions];
-}
-
-
-function saveTransactions() {
-
-    localStorage.setItem(
-        `${STORAGE_PREFIX}-transactions`,
-        JSON.stringify(transactions)
-    );
-}
-
-const defaultUaRecords = [];
-
-let uaRecords = loadUaRecords();
-
-function loadUaRecords() {
-
-    const savedUaRecords =
-        localStorage.getItem(`${STORAGE_PREFIX}-uaRecords`);
-
-    if (savedUaRecords) {
-        return JSON.parse(savedUaRecords);
-    }
-
-    localStorage.setItem(
-        `${STORAGE_PREFIX}-uaRecords`,
-        JSON.stringify(defaultUaRecords)
-    );
-
-    return [...defaultUaRecords];
-}
-
-function saveUaRecords() {
-
-    localStorage.setItem(
-        `${STORAGE_PREFIX}-uaRecords`,
-        JSON.stringify(uaRecords)
-    );
-}
-
-const defaultIncidentRecords = [];
-
-let incidentRecords = loadIncidentRecords();
-
-function loadIncidentRecords() {
-
-    const savedIncidentRecords =
-        localStorage.getItem(
-            `${STORAGE_PREFIX}-incidentRecords`
+        console.log(
+            "Residents loaded from DynamoDB:",
+            residents
         );
 
-    if (savedIncidentRecords) {
-        return JSON.parse(savedIncidentRecords);
+    } catch (error) {
+
+        console.error(
+            "Unable to load residents from DynamoDB:",
+            error
+        );
+
+        alert(
+            "Unable to load resident data from the cloud."
+        );
+
+        throw error;
     }
-
-    localStorage.setItem(
-        `${STORAGE_PREFIX}-incidentRecords`,
-        JSON.stringify(defaultIncidentRecords)
-    );
-
-    return [...defaultIncidentRecords];
 }
 
-function saveIncidentRecords() {
+let transactions = [];
 
-    localStorage.setItem(
-        `${STORAGE_PREFIX}-incidentRecords`,
-        JSON.stringify(incidentRecords)
-    );
+async function loadTransactionsFromCloud() {
+
+    try {
+
+        transactions =
+            await getTransactionsFromApi();
+
+        console.log(
+            "Transactions loaded from DynamoDB:",
+            transactions
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Unable to load transactions from DynamoDB:",
+            error
+        );
+
+        alert(
+            "Unable to load transaction data from the cloud."
+        );
+
+        throw error;
+    }
+}
+
+let uaRecords = [];
+
+async function loadUaRecordsFromCloud() {
+
+    try {
+
+        uaRecords =
+            await getUaRecordsFromApi();
+
+        console.log(
+            "UA records loaded from DynamoDB:",
+            uaRecords
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Unable to load UA records from DynamoDB:",
+            error
+        );
+
+        alert(
+            "Unable to load UA records from the cloud."
+        );
+
+        throw error;
+    }
+}
+
+let incidentRecords = [];
+
+async function loadIncidentRecordsFromCloud() {
+
+    try {
+
+        incidentRecords =
+            await getIncidentRecordsFromApi();
+
+        console.log(
+            "Incident records loaded from DynamoDB:",
+            incidentRecords
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Unable to load incident records from DynamoDB:",
+            error
+        );
+
+        alert(
+            "Unable to load incident records from the cloud."
+        );
+
+        throw error;
+    }
 }
 
 document
@@ -254,7 +147,7 @@ document
 
 document
     .getElementById("incident-form")
-    .addEventListener("submit", event => {
+    .addEventListener("submit", async event => {
 
         event.preventDefault();
 
@@ -292,9 +185,30 @@ document
             recordedAt: new Date().toISOString()
         };
 
-        incidentRecords.push(newIncident);
+        try {
 
-        saveIncidentRecords();
+            const savedIncident =
+                await createIncidentRecordInApi(
+                    newIncident
+                );
+
+            incidentRecords.push(
+                savedIncident
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Unable to save incident record:",
+                error
+            );
+
+            alert(
+                "The incident report could not be saved to the cloud."
+            );
+
+            return;
+        }
 
         document
             .getElementById("incident-form")
@@ -400,12 +314,15 @@ function displayIncidentHistory(residentId) {
     });
 }
 
-function deleteIncident(incidentId) {
+async function deleteIncident(
+    incidentId
+) {
 
     const incident =
         incidentRecords.find(
             incident =>
-                incident.id === incidentId
+                incident.id ===
+                incidentId
         );
 
     if (!incident) {
@@ -420,15 +337,35 @@ function deleteIncident(incidentId) {
         return;
     }
 
+    try {
+
+        await deleteIncidentRecordFromApi(
+            incidentId
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Unable to delete incident record:",
+            error
+        );
+
+        alert(
+            "The incident report could not be deleted from the cloud."
+        );
+
+        return;
+    }
+
     incidentRecords =
         incidentRecords.filter(
             incident =>
-                incident.id !== incidentId
+                incident.id !==
+                incidentId
         );
 
-    saveIncidentRecords();
-
     if (selectedResident) {
+
         displayIncidentHistory(
             selectedResident.id
         );
@@ -478,24 +415,30 @@ function addDays(dateString, numberOfDays) {
     return date.toISOString().split("T")[0];
 }
 
-function generateDueUaRecords() {
+async function generateDueUaRecords() {
 
-    const today = getTodayDate();
+    const today =
+        getTodayDate();
 
-    let uaRecordsChanged = false;
-    let residentsChanged = false;
+    for (const resident of residents) {
 
-    residents.forEach(resident => {
-
-        if (resident.status !== "Active") {
-            return;
+        if (
+            resident.status !==
+            "Active"
+        ) {
+            continue;
         }
 
-        if (!resident.nextUaDueDate) {
-            return;
+        if (
+            !resident.nextUaDueDate
+        ) {
+            continue;
         }
 
-        while (resident.nextUaDueDate <= today) {
+        while (
+            resident.nextUaDueDate <=
+            today
+        ) {
 
             const dueDate =
                 resident.nextUaDueDate;
@@ -503,40 +446,103 @@ function generateDueUaRecords() {
             const alreadyExists =
                 uaRecords.some(
                     record =>
-                        record.residentId === resident.id &&
-                        record.dueDate === dueDate
+                        record.residentId ===
+                        resident.id &&
+                        record.dueDate ===
+                        dueDate
                 );
 
             if (!alreadyExists) {
 
                 const newUaRecord = {
-                    id: `UA-${Date.now()}-${resident.id}-${dueDate}`,
-                    residentId: resident.id,
-                    dueDate: dueDate,
-                    status: "Due",
-                    result: null,
-                    actionDate: null,
-                    resolved: false
+                    id:
+                        `UA-${Date.now()}-${resident.id}-${dueDate}`,
+
+                    residentId:
+                        resident.id,
+
+                    dueDate:
+                        dueDate,
+
+                    status:
+                        "Due",
+
+                    result:
+                        null,
+
+                    actionDate:
+                        null,
+
+                    resolved:
+                        false
                 };
 
-                uaRecords.push(newUaRecord);
+                try {
 
-                uaRecordsChanged = true;
+                    const savedUaRecord =
+                        await createUaRecordInApi(
+                            newUaRecord
+                        );
+
+                    uaRecords.push(
+                        savedUaRecord
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        `Unable to create UA record for ${resident.firstName} ${resident.lastName}:`,
+                        error
+                    );
+
+                    /*
+                        Do NOT advance the UA date
+                        if the UA record itself
+                        could not be saved.
+                    */
+
+                    break;
+                }
             }
 
+            const previousUaDate =
+                resident.nextUaDueDate;
+
             resident.nextUaDueDate =
-                addDays(dueDate, 14);
+                addDays(
+                    dueDate,
+                    14
+                );
 
-            residentsChanged = true;
+            try {
+
+                await updateResidentInApi(
+                    resident
+                );
+
+            } catch (error) {
+
+                console.error(
+                    `Unable to advance UA schedule for ${resident.firstName} ${resident.lastName}:`,
+                    error
+                );
+
+                resident.nextUaDueDate =
+                    previousUaDate;
+
+                break;
+            }
         }
-    });
-
-    if (uaRecordsChanged) {
-        saveUaRecords();
     }
 
-    if (residentsChanged) {
-        saveResidents();
+    updateDashboard();
+    displayResidents();
+
+    if (selectedResident) {
+
+        displayUaHistory(
+            selectedResident.id
+        );
     }
 }
 
@@ -766,7 +772,7 @@ document
 
 document
     .getElementById("ua-schedule-form")
-    .addEventListener("submit", event => {
+    .addEventListener("submit", async event => {
 
         event.preventDefault();
 
@@ -779,12 +785,36 @@ document
                 "next-ua-date"
             ).value;
 
+        const previousUaDate =
+            selectedResident.nextUaDueDate;
+
         selectedResident.nextUaDueDate =
             nextUaDate;
 
-        saveResidents();
-
         generateDueUaRecords();
+
+        try {
+
+            await updateResidentInApi(
+                selectedResident
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Unable to update UA schedule:",
+                error
+            );
+
+            selectedResident.nextUaDueDate =
+                previousUaDate;
+
+            alert(
+                "The UA schedule could not be saved to the cloud."
+            );
+
+            return;
+        }
 
         document
             .getElementById(
@@ -859,7 +889,7 @@ document
 
 document
     .getElementById("ua-update-form")
-    .addEventListener("submit", event => {
+    .addEventListener("submit", async event => {
 
         event.preventDefault();
 
@@ -911,7 +941,39 @@ document
             record.resolved = false;
         }
 
-        saveUaRecords();
+        try {
+
+            const savedRecord =
+                await updateUaRecordInApi(
+                    record
+                );
+
+            const recordIndex =
+                uaRecords.findIndex(
+                    uaRecord =>
+                        uaRecord.id ===
+                        savedRecord.id
+                );
+
+            if (recordIndex !== -1) {
+
+                uaRecords[recordIndex] =
+                    savedRecord;
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Unable to update UA record:",
+                error
+            );
+
+            alert(
+                "The UA record could not be saved to the cloud."
+            );
+
+            return;
+        }
 
         document
             .getElementById(
@@ -965,11 +1027,15 @@ function getResidentUaStatus(resident) {
     return "Not Set";
 }
 
-function deleteTransaction(transactionId) {
+async function deleteTransaction(
+    transactionId
+) {
 
-    const transaction = transactions.find(
-        transaction => transaction.id === transactionId
-    );
+    const transaction =
+        transactions.find(
+            transaction =>
+                transaction.id === transactionId
+        );
 
     if (!transaction) {
         return;
@@ -983,11 +1049,32 @@ function deleteTransaction(transactionId) {
         return;
     }
 
-    transactions = transactions.filter(
-        transaction => transaction.id !== transactionId
-    );
+    try {
 
-    saveTransactions();
+        await deleteTransactionFromApi(
+            transactionId
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Unable to delete transaction:",
+            error
+        );
+
+        alert(
+            "The transaction could not be deleted from the cloud."
+        );
+
+        return;
+    }
+
+    transactions =
+        transactions.filter(
+            transaction =>
+                transaction.id !==
+                transactionId
+        );
 
     refreshResidentData();
 }
@@ -1132,7 +1219,7 @@ document.getElementById("cancel-add-resident").addEventListener("click", () => {
     document.getElementById("add-resident-form").reset();
 });
 
-document.getElementById("add-resident-form").addEventListener("submit", event => {
+document.getElementById("add-resident-form").addEventListener("submit", async event => {
 
     event.preventDefault();
 
@@ -1164,10 +1251,32 @@ document.getElementById("add-resident-form").addEventListener("submit", event =>
         choreStatus: "Complete"
     };
 
-    residents.push(newResident);
+    try {
 
-    saveResidents();
-    generateDueUaRecords();
+        const savedResident =
+            await createResidentInApi(
+                newResident
+            );
+
+        residents.push(
+            savedResident
+        );
+
+        generateDueUaRecords();
+
+    } catch (error) {
+
+        console.error(
+            "Unable to create resident:",
+            error
+        );
+
+        alert(
+            "The resident could not be saved to the cloud."
+        );
+
+        return;
+    }
 
     document.getElementById("add-resident-form").reset();
 
@@ -1302,7 +1411,7 @@ function displayUaHistory(residentId) {
     });
 }
 
-document.getElementById("archive-resident").addEventListener("click", () => {
+document.getElementById("archive-resident").addEventListener("click", async () => {
 
     if (!selectedResident) {
         return;
@@ -1316,33 +1425,82 @@ document.getElementById("archive-resident").addEventListener("click", () => {
         return;
     }
 
-    selectedResident.status = "Archived";
-    selectedResident.nextUaDueDate = null;
+    const previousStatus =
+        selectedResident.status;
+
+    const previousUaDate =
+        selectedResident.nextUaDueDate;
+
+    const previousArchivedDate =
+        selectedResident.archivedDate;
+
+    selectedResident.status =
+        "Archived";
+
+    selectedResident.nextUaDueDate =
+        null;
 
     selectedResident.archivedDate =
-        new Date().toISOString().split("T")[0];
+        getTodayDate();
 
-    saveResidents();
+    try {
+
+        await updateResidentInApi(
+            selectedResident
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Unable to archive resident:",
+            error
+        );
+
+        selectedResident.status =
+            previousStatus;
+
+        selectedResident.nextUaDueDate =
+            previousUaDate;
+
+        selectedResident.archivedDate =
+            previousArchivedDate;
+
+        alert(
+            "The resident could not be archived in the cloud."
+        );
+
+        return;
+    }
 
     updateDashboard();
 
-    document.getElementById("resident-details").classList.add("hidden");
-    document.getElementById("dashboard").classList.remove("hidden");
-    document.getElementById("residents").classList.remove("hidden");
+    document
+        .getElementById("resident-details")
+        .classList.add("hidden");
+
+    document
+        .getElementById("dashboard")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("residents")
+        .classList.remove("hidden");
 
     displayResidents();
 });
 
-document.getElementById("delete-resident").addEventListener("click", () => {
+document.getElementById("delete-resident").addEventListener("click", async () => {
 
     if (!selectedResident) {
         return;
     }
 
-    const residentTransactions = transactions.filter(
-        transaction =>
-            transaction.residentId === selectedResident.id
-    );
+    const residentTransactions =
+        transactions.filter(
+            transaction =>
+                transaction.residentId ===
+                selectedResident.id
+        );
 
     if (residentTransactions.length > 0) {
 
@@ -1361,17 +1519,49 @@ document.getElementById("delete-resident").addEventListener("click", () => {
         return;
     }
 
-    residents = residents.filter(
-        resident => resident.id !== selectedResident.id
-    );
+    const residentId =
+        selectedResident.id;
 
-    saveResidents();
+    try {
 
-    selectedResident = null;
+        await deleteResidentFromApi(
+            residentId
+        );
 
-    document.getElementById("resident-details").classList.add("hidden");
-    document.getElementById("dashboard").classList.remove("hidden");
-    document.getElementById("residents").classList.remove("hidden");
+    } catch (error) {
+
+        console.error(
+            "Unable to delete resident:",
+            error
+        );
+
+        alert(
+            "The resident could not be deleted from the cloud."
+        );
+
+        return;
+    }
+
+    residents =
+        residents.filter(
+            resident =>
+                resident.id !== residentId
+        );
+
+    selectedResident =
+        null;
+
+    document
+        .getElementById("resident-details")
+        .classList.add("hidden");
+
+    document
+        .getElementById("dashboard")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("residents")
+        .classList.remove("hidden");
 
     updateDashboard();
     displayResidents();
@@ -1442,10 +1632,11 @@ function displayArchivedResidents() {
     });
 }
 
-function restoreResident(residentId) {
+async function restoreResident(residentId) {
 
     const resident = residents.find(
-        resident => resident.id === residentId
+        resident =>
+            resident.id === residentId
     );
 
     if (!resident) {
@@ -1460,10 +1651,43 @@ function restoreResident(residentId) {
         return;
     }
 
-    resident.status = "Active";
-    resident.archivedDate = null;
+    const previousStatus =
+        resident.status;
 
-    saveResidents();
+    const previousArchivedDate =
+        resident.archivedDate;
+
+    resident.status =
+        "Active";
+
+    resident.archivedDate =
+        null;
+
+    try {
+
+        await updateResidentInApi(
+            resident
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Unable to restore resident:",
+            error
+        );
+
+        resident.status =
+            previousStatus;
+
+        resident.archivedDate =
+            previousArchivedDate;
+
+        alert(
+            "The resident could not be restored in the cloud."
+        );
+
+        return;
+    }
 
     displayArchivedResidents();
     updateDashboard();
@@ -1525,7 +1749,7 @@ document.getElementById("cancel-payment").addEventListener("click", () => {
     document.getElementById("payment-form").reset();
 });
 
-document.getElementById("payment-form").addEventListener("submit", event => {
+document.getElementById("payment-form").addEventListener("submit", async event => {
 
     event.preventDefault();
 
@@ -1553,9 +1777,30 @@ document.getElementById("payment-form").addEventListener("submit", event => {
         paymentMethod: paymentMethod
     };
 
-    transactions.push(newPayment);
+    try {
 
-    saveTransactions();
+        const savedPayment =
+            await createTransactionInApi(
+                newPayment
+            );
+
+        transactions.push(
+            savedPayment
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Unable to save payment:",
+            error
+        );
+
+        alert(
+            "The payment could not be saved to the cloud."
+        );
+
+        return;
+    }
 
     document.getElementById("payment-form").reset();
 
@@ -1586,57 +1831,105 @@ document.getElementById("add-rent-charge").addEventListener("click", () => {
         .classList.remove("hidden");
 });
 
-document.getElementById("post-weekly-rent").addEventListener("click", () => {
+document
+    .getElementById("post-weekly-rent")
+    .addEventListener("click", async () => {
 
-    const billingDate =
-        new Date().toISOString().split("T")[0];
+        const billingDate =
+            getTodayDate();
 
-    let chargesCreated = 0;
+        let chargesCreated = 0;
+        let chargesFailed = 0;
 
-    residents.forEach(resident => {
+        for (const resident of residents) {
 
-        if (resident.status !== "Active") {
-            return;
+            if (
+                resident.status !==
+                "Active"
+            ) {
+                continue;
+            }
+
+            const alreadyCharged =
+                transactions.some(
+                    transaction =>
+                        transaction.residentId ===
+                        resident.id &&
+                        transaction.type ===
+                        "Charge" &&
+                        transaction.category ===
+                        "Weekly Rent" &&
+                        transaction.billingDate ===
+                        billingDate
+                );
+
+            if (alreadyCharged) {
+                continue;
+            }
+
+            const newCharge = {
+                id:
+                    `TXN-${Date.now()}-${resident.id}`,
+
+                residentId:
+                    resident.id,
+
+                type:
+                    "Charge",
+
+                category:
+                    "Weekly Rent",
+
+                amount:
+                    resident.weeklyRent,
+
+                date:
+                    billingDate,
+
+                billingDate:
+                    billingDate
+            };
+
+            try {
+
+                const savedCharge =
+                    await createTransactionInApi(
+                        newCharge
+                    );
+
+                transactions.push(
+                    savedCharge
+                );
+
+                chargesCreated++;
+
+            } catch (error) {
+
+                console.error(
+                    `Unable to post rent for ${resident.firstName} ${resident.lastName}:`,
+                    error
+                );
+
+                chargesFailed++;
+            }
         }
 
-        const alreadyCharged = transactions.some(
-            transaction =>
-                transaction.residentId === resident.id &&
-                transaction.type === "Charge" &&
-                transaction.category === "Weekly Rent" &&
-                transaction.billingDate === billingDate
-        );
+        updateDashboard();
+        displayResidents();
 
-        if (alreadyCharged) {
-            return;
+        if (chargesFailed === 0) {
+
+            alert(
+                `${chargesCreated} weekly rent charge(s) posted.`
+            );
+
+        } else {
+
+            alert(
+                `${chargesCreated} weekly rent charge(s) posted. ${chargesFailed} charge(s) failed to save.`
+            );
         }
-
-        const newCharge = {
-            id: `TXN-${Date.now()}-${selectedResident.id}`,
-            residentId: resident.id,
-            type: "Charge",
-            category: "Weekly Rent",
-            amount: resident.weeklyRent,
-            date: billingDate,
-            billingDate: billingDate
-        };
-
-        transactions.push(newCharge);
-
-        chargesCreated++;
     });
-
-    if (chargesCreated > 0) {
-        saveTransactions();
-    }
-
-    updateDashboard();
-    displayResidents();
-
-    alert(
-        `${chargesCreated} weekly rent charge(s) posted.`
-    );
-});
 
 document.getElementById("cancel-rent-charge").addEventListener("click", () => {
 
@@ -1647,7 +1940,7 @@ document.getElementById("cancel-rent-charge").addEventListener("click", () => {
     document.getElementById("rent-charge-form").reset();
 });
 
-document.getElementById("rent-charge-form").addEventListener("submit", event => {
+document.getElementById("rent-charge-form").addEventListener("submit", async event => {
 
     event.preventDefault();
 
@@ -1689,9 +1982,30 @@ document.getElementById("rent-charge-form").addEventListener("submit", event => 
         billingDate: billingDate
     };
 
-    transactions.push(newCharge);
+    try {
 
-    saveTransactions();
+        const savedCharge =
+            await createTransactionInApi(
+                newCharge
+            );
+
+        transactions.push(
+            savedCharge
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Unable to save rent charge:",
+            error
+        );
+
+        alert(
+            "The rent charge could not be saved to the cloud."
+        );
+
+        return;
+    }
 
     document.getElementById("rent-charge-form").reset();
 
@@ -1702,6 +2016,21 @@ document.getElementById("rent-charge-form").addEventListener("submit", event => 
     refreshResidentData();
 });
 
-generateDueUaRecords();
-updateDashboard();
-displayResidents();
+async function initializeApplication() {
+
+    await loadResidentsFromCloud();
+
+    await loadTransactionsFromCloud();
+
+    await loadUaRecordsFromCloud();
+
+    await loadIncidentRecordsFromCloud();
+
+    await generateDueUaRecords();
+
+    updateDashboard();
+    displayResidents();
+}
+
+
+initializeApplication();
