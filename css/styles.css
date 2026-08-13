@@ -540,3 +540,37 @@ section h2 {
     color: white;
     cursor: pointer;
 }
+
+/* =========================================
+INCIDENT FORM BUTTONS
+========================================= */
+
+#incident-form .form-actions button {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+#incident-form button[type="submit"] {
+    background-color: #1f3a5f;
+    color: white;
+}
+
+#incident-form button[type="submit"]:hover {
+    background-color: #294d7d;
+    transform: translateY(-1px);
+}
+
+#cancel-incident {
+    background-color: #7b8794;
+    color: white;
+}
+
+#cancel-incident:hover {
+    background-color: #68737f;
+    transform: translateY(-1px);
+}

@@ -16,3 +16,50 @@
     line-height: 1.6;
     white-space: pre-wrap;
 }
+
+#generate-ai-summary {
+    margin-top: 10px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    background-color: #208572;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+#generate-ai-summary:hover {
+    background-color: #1db698;
+    transform: translateY(-1px);
+}
+
+/* =========================================
+AI INCIDENT BUTTONS
+========================================= */
+
+#improve-incident-with-ai,
+#use-incident-ai-suggestion {
+    margin-top: 10px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    background-color: #208572;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+#improve-incident-with-ai:hover,
+#use-incident-ai-suggestion:hover {
+    background-color: #1db698;
+    transform: translateY(-1px);
+}
+
+#improve-incident-with-ai:active,
+#use-incident-ai-suggestion:active {
+    transform: translateY(0);
+}
