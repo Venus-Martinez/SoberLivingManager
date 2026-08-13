@@ -63,3 +63,48 @@ AI INCIDENT BUTTONS
 #use-incident-ai-suggestion:active {
     transform: translateY(0);
 }
+
+/* =========================================
+AI MANAGEMENT BRIEF
+========================================= */
+
+#generate-management-brief {
+    margin-top: 10px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    background-color: #208572;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+#generate-management-brief:hover {
+    background-color: #1db698;
+    transform: translateY(-1px);
+}
+
+#generate-management-brief:active {
+    transform: translateY(0);
+}
+
+#management-brief-container {
+    margin-top: 20px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 5px solid #208572;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+#management-brief-container h3 {
+    margin-top: 0;
+    color: #208572;
+}
+
+#management-brief-output {
+    line-height: 1.6;
+    white-space: pre-wrap;
+}

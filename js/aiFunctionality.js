@@ -4,6 +4,9 @@ const API_URL =
 const INCIDENT_REWRITE_API_URL =
     "https://ijsdv38yzf.execute-api.us-east-1.amazonaws.com/incident-rewrite";
 
+const MANAGEMENT_BRIEF_API_URL =
+    "https://ijsdv38yzf.execute-api.us-east-1.amazonaws.com/management-brief";
+
 function buildResidentAiContext(resident) {
 
     if (!resident) {
@@ -476,3 +479,209 @@ function resetIncidentAiAssist() {
 
     currentIncidentAiAction = null;
 }
+
+function buildManagementBriefContext() {
+
+    const activeResidents =
+        residents.filter(
+            resident =>
+                resident.status === "Active"
+        );
+
+    return {
+        generatedDate: getTodayDate(),
+
+        houseSummary: {
+            activeResidentCount:
+                activeResidents.length
+        },
+
+        residents:
+            activeResidents.map(resident => {
+
+                const balance =
+                    calculateResidentBalance(
+                        resident.id
+                    );
+
+                const residentTransactions =
+                    transactions
+                        .filter(
+                            transaction =>
+                                transaction.residentId ===
+                                resident.id
+                        )
+                        .sort(
+                            (a, b) =>
+                                new Date(b.date) -
+                                new Date(a.date)
+                        )
+                        .slice(0, 5);
+
+                const residentUaRecords =
+                    uaRecords
+                        .filter(
+                            record =>
+                                record.residentId ===
+                                resident.id
+                        )
+                        .sort(
+                            (a, b) =>
+                                new Date(b.dueDate) -
+                                new Date(a.dueDate)
+                        );
+
+                const unresolvedUaRecords =
+                    residentUaRecords
+                        .filter(
+                            record =>
+                                !record.resolved
+                        )
+                        .slice(0, 3);
+
+                const recentUaRecords =
+                    residentUaRecords
+                        .slice(0, 3);
+
+                const recentIncidents =
+                    incidentRecords
+                        .filter(
+                            incident =>
+                                incident.residentId ===
+                                resident.id
+                        )
+                        .sort(
+                            (a, b) =>
+                                new Date(b.date) -
+                                new Date(a.date)
+                        )
+                        .slice(0, 3);
+
+                return {
+                    resident: {
+                        firstName:
+                            resident.firstName,
+
+                        lastName:
+                            resident.lastName,
+
+                        status:
+                            resident.status,
+
+                        financialStatus:
+                            balance < 0
+                                ? "Amount Owed"
+                                : balance > 0
+                                    ? "Resident Credit"
+                                    : "Paid in Full",
+
+                        amountOwed:
+                            balance < 0
+                                ? Math.abs(balance)
+                                : 0,
+
+                        creditAmount:
+                            balance > 0
+                                ? balance
+                                : 0,
+
+                        nextUaDueDate:
+                            resident.nextUaDueDate,
+
+                        uaStatus:
+                            getResidentUaStatus(
+                                resident
+                            )
+                    },
+
+                    recentTransactions:
+                        residentTransactions,
+
+                    unresolvedUaRecords:
+                        unresolvedUaRecords,
+
+                    recentUaRecords:
+                        recentUaRecords,
+
+                    recentIncidents:
+                        recentIncidents
+                };
+            })
+    };
+}
+
+document
+    .getElementById(
+        "generate-management-brief"
+    )
+    .addEventListener(
+        "click",
+        async () => {
+
+            const managementContext =
+                buildManagementBriefContext();
+
+            const briefContainer =
+                document.getElementById(
+                    "management-brief-container"
+                );
+
+            const briefOutput =
+                document.getElementById(
+                    "management-brief-output"
+                );
+
+            briefContainer.classList.remove(
+                "hidden"
+            );
+
+            briefOutput.textContent =
+                "Generating management brief...";
+
+            try {
+
+                const response =
+                    await fetch(
+                        MANAGEMENT_BRIEF_API_URL,
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+                                managementContext:
+                                    managementContext
+                            })
+                        }
+                    );
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        `API request failed with status ${response.status}`
+                    );
+                }
+
+                const data =
+                    await response.json();
+
+                briefOutput.innerHTML =
+                    formatAiSummary(
+                        data.managementBrief
+                    );
+
+            } catch (error) {
+
+                console.error(
+                    "Management Brief Error:",
+                    error
+                );
+
+                briefOutput.textContent =
+                    "Unable to generate the management brief.";
+            }
+        }
+    );
