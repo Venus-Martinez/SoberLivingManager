@@ -108,3 +108,55 @@ AI MANAGEMENT BRIEF
     line-height: 1.6;
     white-space: pre-wrap;
 }
+
+/* =========================================
+ASK THE HOUSE
+========================================= */
+
+#ask-house-container {
+    margin-top: 20px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+#ask-house-button {
+    margin-top: 5px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    background-color: #208572;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+#ask-house-button:hover {
+    background-color: #1db698;
+    transform: translateY(-1px);
+}
+
+#ask-house-button:active {
+    transform: translateY(0);
+}
+
+#ask-house-answer-container {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f8fafc;
+    border-left: 5px solid #208572;
+    border-radius: 8px;
+}
+
+#ask-house-answer-container h3 {
+    margin-top: 0;
+    color: #208572;
+}
+
+#ask-house-answer {
+    line-height: 1.6;
+    white-space: pre-wrap;
+}

@@ -7,6 +7,9 @@ const INCIDENT_REWRITE_API_URL =
 const MANAGEMENT_BRIEF_API_URL =
     "https://ijsdv38yzf.execute-api.us-east-1.amazonaws.com/management-brief";
 
+const ASK_HOUSE_API_URL =
+    "https://ijsdv38yzf.execute-api.us-east-1.amazonaws.com/ask-house";
+
 function buildResidentAiContext(resident) {
 
     if (!resident) {
@@ -685,3 +688,227 @@ document
             }
         }
     );
+
+    function buildAskHouseContext() {
+
+    const activeResidents =
+        residents.filter(
+            resident =>
+                resident.status === "Active"
+        );
+
+    return {
+        generatedDate:
+            getTodayDate(),
+
+        activeResidentCount:
+            activeResidents.length,
+
+        residents:
+            activeResidents.map(
+                resident => {
+
+                    const balance =
+                        calculateResidentBalance(
+                            resident.id
+                        );
+
+                    const residentTransactions =
+                        transactions
+                            .filter(
+                                transaction =>
+                                    transaction.residentId ===
+                                    resident.id
+                            )
+                            .sort(
+                                (a, b) =>
+                                    new Date(b.date) -
+                                    new Date(a.date)
+                            )
+                            .slice(0, 20);
+
+                    const residentUaRecords =
+                        uaRecords
+                            .filter(
+                                record =>
+                                    record.residentId ===
+                                    resident.id
+                            )
+                            .sort(
+                                (a, b) =>
+                                    new Date(b.dueDate) -
+                                    new Date(a.dueDate)
+                            )
+                            .slice(0, 10);
+
+                    const residentIncidents =
+                        incidentRecords
+                            .filter(
+                                incident =>
+                                    incident.residentId ===
+                                    resident.id
+                            )
+                            .sort(
+                                (a, b) =>
+                                    new Date(b.date) -
+                                    new Date(a.date)
+                            )
+                            .slice(0, 10);
+
+                    return {
+                        resident: {
+                            firstName:
+                                resident.firstName,
+
+                            lastName:
+                                resident.lastName,
+
+                            status:
+                                resident.status,
+
+                            financialStatus:
+                                balance < 0
+                                    ? "Amount Owed"
+                                    : balance > 0
+                                        ? "Resident Credit"
+                                        : "Paid in Full",
+
+                            amountOwed:
+                                balance < 0
+                                    ? Math.abs(balance)
+                                    : 0,
+
+                            creditAmount:
+                                balance > 0
+                                    ? balance
+                                    : 0,
+
+                            nextUaDueDate:
+                                resident.nextUaDueDate,
+
+                            uaStatus:
+                                getResidentUaStatus(
+                                    resident
+                                )
+                        },
+
+                        transactions:
+                            residentTransactions,
+
+                        uaRecords:
+                            residentUaRecords,
+
+                        incidents:
+                            residentIncidents
+                    };
+                }
+            )
+    };
+}
+
+document
+    .getElementById("ask-house-button")
+    .addEventListener("click", async () => {
+
+        const questionInput =
+            document.getElementById(
+                "ask-house-question"
+            );
+
+        const question =
+            questionInput.value.trim();
+
+        if (!question) {
+
+            alert(
+                "Enter a question before asking AI."
+            );
+
+            return;
+        }
+
+        const houseContext =
+            buildAskHouseContext();
+
+        const answerContainer =
+            document.getElementById(
+                "ask-house-answer-container"
+            );
+
+        const answerOutput =
+            document.getElementById(
+                "ask-house-answer"
+            );
+
+        answerContainer.classList.remove(
+            "hidden"
+        );
+
+        answerOutput.textContent =
+            "Reviewing house records...";
+
+        try {
+
+            const response =
+                await fetch(
+                    ASK_HOUSE_API_URL,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            question:
+                                question,
+
+                            houseContext:
+                                houseContext
+                        })
+                    }
+                );
+
+            if (!response.ok) {
+
+                throw new Error(
+                    `API request failed with status ${response.status}`
+                );
+            }
+
+            const data =
+                await response.json();
+
+            answerOutput.innerHTML =
+                formatAiSummary(
+                    data.answer
+                );
+
+        } catch (error) {
+
+            console.error(
+                "Ask the House Error:",
+                error
+            );
+
+            answerOutput.textContent =
+                "Unable to answer the question.";
+        }
+    });
+
+document
+    .getElementById("ask-house-question")
+    .addEventListener("keydown", event => {
+
+        if (event.key === "Enter") {
+
+            event.preventDefault();
+
+            document
+                .getElementById(
+                    "ask-house-button"
+                )
+                .click();
+        }
+    });
