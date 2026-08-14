@@ -18,7 +18,27 @@
         <p>Resident Management System</p>
     </header>
 
-    <main>
+    <div id="auth-controls">
+
+        <div id="logged-out-view">
+            <button id="sign-in-button">
+                Sign In
+            </button>
+        </div>
+
+        <div id="logged-in-view" class="hidden">
+
+            <span id="signed-in-user"></span>
+
+            <button id="sign-out-button">
+                Sign Out
+            </button>
+
+        </div>
+
+    </div>
+
+    <main id="protected-app" class="hidden">
 
         <section id="dashboard">
 
@@ -670,6 +690,8 @@
 
     </main>
 
+    <script type="module" src="/js/authUi.js"></script>
+    <script type="module" src="/js/authService.js"></script>
     <script src="js/apiService.js"></script>
     <script src="js/app.js"></script>
     <script src="js/aiFunctionality.js"></script>
