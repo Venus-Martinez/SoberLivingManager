@@ -13,10 +13,16 @@ const cognitoAuthConfig = {
         "6ke5hm2a9qqvm5entap3rmk3mn",
 
     redirect_uri:
-        `${window.location.origin}/`,
+        new URL(
+            import.meta.env.BASE_URL,
+            window.location.origin
+        ).href,
 
     post_logout_redirect_uri:
-        `${window.location.origin}/`,
+        new URL(
+            import.meta.env.BASE_URL,
+            window.location.origin
+        ).href,
 
     response_type:
         "code",
@@ -48,7 +54,10 @@ export async function signOut() {
     await userManager.removeUser();
 
     const logoutUri =
-        `${window.location.origin}/`;
+        new URL(
+            import.meta.env.BASE_URL,
+            window.location.origin
+        ).href;
 
     const cognitoDomain =
         "https://us-east-1gynpjdhyy.auth.us-east-1.amazoncognito.com";
