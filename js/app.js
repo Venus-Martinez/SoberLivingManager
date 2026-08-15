@@ -1,3 +1,8 @@
+import './authUi.js';
+import './authService.js';
+import './apiService.js';
+import './aiFunctionality.js';
+
 let residents = [];
 
 async function loadResidentsFromCloud() {
